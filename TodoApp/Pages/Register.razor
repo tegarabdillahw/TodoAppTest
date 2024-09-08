@@ -1,0 +1,34 @@
+﻿@page "/register"
+@using TodoApp.Services;
+@inject UserService UserService
+@inject NavigationManager Navigation
+
+<h3>Register</h3>
+
+<div>
+    <label>User ID: </label>
+    <input @bind="userId" />
+</div>
+<div>
+    <label>Password: </label>
+    <input type="password" @bind="password" />
+</div>
+<div>
+    <label>Name: </label>
+    <input @bind="name" />
+</div>
+<div>
+    <button @onclick="RegisterUser">Register</button>
+</div>
+
+@code {
+    private string userId;
+    private string password;
+    private string name;
+
+    private async Task RegisterUser()
+    {
+        await UserService.RegisterUser(userId, password, name);
+        Navigation.NavigateTo("/login");
+    }
+}

@@ -1,0 +1,29 @@
+﻿@page "/login"
+@using TodoApp.Services;
+@inject UserService UserService
+@inject NavigationManager Navigation
+
+<h3>Login</h3>
+
+<div>
+    <label>User ID: </label>
+    <input @bind="userId" />
+</div>
+<div>
+    <label>Password: </label>
+    <input type="password" @bind="password" />
+</div>
+<div>
+    <button @onclick="LoginUser">Login</button>
+</div>
+
+@code {
+    private string userId;
+    private string password;
+
+    private async Task LoginUser()
+    {
+        var user = await UserService.Authenticate(userId, password);
+        Navigation.NavigateTo("/todo-list");
+    }
+}

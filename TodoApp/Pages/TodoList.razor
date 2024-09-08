@@ -1,0 +1,46 @@
+﻿@page "/todo-list"
+@using ToDoApp.Models;
+@using ToDoApp.Services;
+@inject TodoService TodoService
+@inject NavigationManager Navigation
+
+<h3>My To-Do List</h3>
+
+<button @onclick="CreateNewTodo">New To-Do</button>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            <b>@todo.ActivityNo</b> - @todo.Subject (@todo.Status)
+            <button @onclick="() => MarkDone(todo.Id)">Mark Done</button>
+            <button @onclick="() => DeleteTodo(todo.Id)">Delete</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private List<Todo> todos = new List<Todo>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        todos = await TodoService.GetUserTodos(1); // Use logged-in user ID in production
+    }
+
+    private async Task CreateNewTodo()
+    {
+        Navigation.NavigateTo("/create-todo");
+    }
+
+    private async Task MarkDone(int id)
+    {
+        await TodoService.MarkTodoStatus(id, TodoStatus.Done);
+        todos = await TodoService.GetUserTodos(1);
+    }
+
+    private async Task DeleteTodo(int id)
+    {
+        await TodoService.DeleteTodoIfUnmarked(id);
+        todos = await TodoService.GetUserTodos(1);
+    }
+}
